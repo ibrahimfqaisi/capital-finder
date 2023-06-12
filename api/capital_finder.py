@@ -15,20 +15,15 @@ class handler(BaseHTTPRequestHandler):
     my_dict = dict(query_list)
 
     # print(111,my_dict)
-    if 'word' in my_dict:
-      word = my_dict.get('word')
-      url= 'https://api.dictionaryapi.dev/api/v2/entries/en/'
-      res = requests.get(url+word)
+    if 'country' in my_dict:
+      capital = my_dict.get('country')
+      url= f'https://restcountries.com/v3.1/capital/{capital}'
+      res = requests.get(url+capital)
       data = res.json()
     #   print(222,data)
     for word_data in data :
-      definition = word_data['meanings'][0]['definitions'][0]['definition']
-      message = str(definition)
+      definition = word_data['name'][0]
+      message = str(f"{capital} is the capital of {definition}")
       list_of_dif.append(message)
-    print(2222,list_of_dif)
-
-
-
-
     self.wfile.write(message.encode())
     return
