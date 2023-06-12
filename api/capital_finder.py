@@ -22,7 +22,7 @@ class handler(BaseHTTPRequestHandler):
       data = res.json()
     #   print(222,data)
     for word_data in data :
-      definition = word_data['name'][0]
+      definition = word_data['name']["common"]
       message = str(f"{capital} is the capital of {definition}")
       list_of_dif.append(message)
     self.wfile.write(message.encode())
