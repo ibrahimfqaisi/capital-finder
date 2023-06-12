@@ -8,7 +8,6 @@ class handler(BaseHTTPRequestHandler):
     self.send_header('Content-type', 'text/plain')
     self.end_headers()
     list_of_dif=[]
-    message="testing"
     url_path = self.path
     url_components = parse.urlsplit(url_path)
     query_list = parse.parse_qsl(url_components.query)
@@ -22,8 +21,8 @@ class handler(BaseHTTPRequestHandler):
       data = res.json()
     #   print(222,data)
     for word_data in data :
-      definition = word_data[0]['name']["common"]
-      message = str(f"{capital} is the capital of {definition}")
+      definition = word_data['name']["common"]
+      message = f"{capital} is the capital of {definition}"
       list_of_dif.append(message)
     self.wfile.write(message.encode())
     return
