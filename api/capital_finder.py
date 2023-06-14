@@ -1,40 +1,40 @@
 from http.server import BaseHTTPRequestHandler
 from urllib import parse
-import requests
+import requests 
 
 
-class Handler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        """
-        Handle the GET request.
-        """
-        self.send_response(200)
-        self.send_header('Content-type', 'text/plain')
-        self.end_headers()
+class handler(BaseHTTPRequestHandler):
+  """
+   Handle the GET request.
+  """
+  def do_GET(self):
+    self.send_response(200)
+    self.send_header('Content-type', 'text/plain')
+    self.end_headers()
+   
+    url_path = self.path
+    url_components = parse.urlsplit(url_path)
+    query_list = parse.parse_qsl(url_components.query)
+    my_dict = dict(query_list)
 
-        url_path = self.path
-        url_components = parse.urlsplit(url_path)
-        query_list = parse.parse_qsl(url_components.query)
-        my_dict = dict(query_list)
-        message = ""
+    if 'country' in my_dict:
+      word = my_dict.get('country')
+      url= 'https://restcountries.com/v3.1/name/'
+      res = requests.get(url+word)
+      data = res.json()
+      for data in data :
+          definition = data['capital'][0]
+          message = f"The capital of {word} is {definition}"
 
-        if 'country' in my_dict:
-            word = my_dict.get('country')
-            url = 'https://restcountries.com/v3.1/name/'
-            res = requests.get(url + word)
-            data = res.json()
-            for word_data in data:
-                definition = word_data['capital'][0]
-                message = f"The capital of {word} is {definition}"
+    elif 'capital' in my_dict:
+      word = my_dict.get('capital')
+      url= 'https://restcountries.com/v3.1/capital/'
+      res = requests.get(url+word)
+      data = res.json()
+      for data in data :
+        definition = data['name']['common']
+        message = f"{word} The Capital of {definition}"
 
-        elif 'capital' in my_dict:
-            word = my_dict.get('capital')
-            url = 'https://restcountries.com/v3.1/capital/'
-            res = requests.get(url + word)
-            data = res.json()
-            for word_data in data:
-                definition = word_data['name']['common']
-                message = f"{word} is the capital of {definition}"
 
-        self.wfile.write(message.encode())
-        return
+    self.wfile.write(message.encode())
+    return
